@@ -1,0 +1,33 @@
+CISC 3130 — Build a Music Player
+Big-O Analysis and Design Choices
+
+Part A: Big-O Table
+
+Method        Structures touched                 Big-O           Reason
+addSong       HashMap, LinkedList                O(1) average    Hash lookup and append to the end are constant time.
+findSong      HashMap                            O(1) average    Hash lookup finds a song directly by ID.
+play          HashMap, history stack, counts     O(1) average    Lookup, stack push, and count update are constant time.
+queueLater    HashMap, ArrayDeque                 O(1) average    Lookup and addLast are constant time.
+queueNext     HashMap, ArrayDeque                 O(1) average    Lookup and addFirst are constant time.
+next          ArrayDeque, LinkedList, maps, stack O(n + q) worst  It may skip q queued entries and scan n playlist entries.
+back          History stack, ArrayDeque, maps    O(h) worst      It may pop h removed history entries before finding a valid song.
+removeSong    HashMap, LinkedList, counts        O(n) worst      LinkedList.remove(Object) scans up to n songs.
+showPlaylist  LinkedList, result ArrayList       O(n)            It visits each playlist song to collect titles.
+
+Here n is the number of playlist songs, q is the number of queued entries examined,
+and h is the number of history entries examined. HashMap costs are average-case.
+
+Part B: Defend Two Choices
+
+1. Library — HashMap
+I used a HashMap for the song library so I can find a song immediately using its ID.
+It gives O(1) average lookup time instead of searching a plain array in O(n) time.
+The built-in HashMap also saves me from having to implement hashing and resizing myself.
+It makes it easy to check for duplicate IDs and to remove songs from the library.
+
+2. Up next — ArrayDeque
+I used an ArrayDeque for up next because songs need to be added to both the front and back.
+Its addFirst, addLast, and pollFirst operations take O(1) amortized time.
+A plain array-based list would usually require shifting elements when adding or removing
+at the front, which takes O(n) time. ArrayDeque gives me the efficiency of a deque
+without needing to build a linked-node deque myself.
